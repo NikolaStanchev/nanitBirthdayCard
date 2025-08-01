@@ -16,6 +16,13 @@ final class ViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var birthdayDate: Date = .now
     @Published var selectedImage: UIImage?
+    @Published var theme: Theme
+    
+    init() {
+        let availableThemes = Theme.allCases
+        theme = availableThemes[Int.random(in: 0..<availableThemes.count)]
+        print("Chosen theme is: \(theme)")
+    }
     
     /// Function for getting a UIImage from single PhotosPicker selection
     /// - Parameter imageSelection: The result from the user selecting a single photo in PhotosPicker

@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 
-struct InputFormView: View {    
+struct InputFormView: View {
     @State var showChooseDialog: Bool = false
     @State var showPhotosPicker: Bool = false
     @State var showCameraView: Bool = false
@@ -16,36 +16,58 @@ struct InputFormView: View {
     
     @ObservedObject var viewModel: ViewModel = ViewModel()
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
-                CircularPhotoView(image: $viewModel.selectedImage)
+        VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Birthday Card")
+                    .font(.title)
+                    .fontWeight(.bold)
+                HStack {
+                    Text("by")
+                        .fontWeight(.ultraLight)
+                    Image("Nanit_logo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 15)
+                }
+            }
+            Spacer()
+            CircularPhotoView(image: $viewModel.selectedImage, theme: $viewModel.theme)
                 .onTapGesture {
                     showChooseDialog = true
                 }
-                Text("Name")
-                TextField("Name", text: $viewModel.name)
-                DatePicker("Birthday", selection: $viewModel.birthdayDate, displayedComponents: .date)
-                Button {
-                    print("Navigate to card view here")
-                } label: {
-                    Text("Show birthday screen")
-                        .foregroundStyle(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                }
-                .background(viewModel.name == "" ? .gray : .pink)
-                .clipShape(Capsule())
-                .disabled(viewModel.name == "")
-                .padding(.bottom, 53)
-                
-                    
+            Spacer()
+            Text("Name")
+            TextField("e.g. Christiano Ronaldo", text: $viewModel.name)
+                .tint(viewModel.theme.color)
+                .textFieldStyle(.roundedBorder)
+            DatePicker("Birthday", selection: $viewModel.birthdayDate, displayedComponents: .date)
+                .tint(viewModel.theme.color)
+            Spacer()
+            Button {
+                print("Navigate to card view here")
+            } label: {
+                Text("Show birthday screen")
+                    .foregroundStyle(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, 20)
+            .background(viewModel.name == "" ? .gray : viewModel.theme.color)
+            .clipShape(Capsule())
+            .disabled(viewModel.name == "")
+            .padding(.bottom, 53)
+            
+            
         }
-        .navigationTitle("Nanit")
+        .padding(.horizontal, 20)
+        .onChange(of: selectedItem) { imageSelection in
+            viewModel.getPhoto(for: imageSelection)
+        }
         .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
-        .sheet(isPresented: $showCameraView, content: {
-            CameraView(image: $viewModel.selectedImage)
+        .fullScreenCover(isPresented: $showCameraView, content: {
+            VStack {
+                CameraView(image: $viewModel.selectedImage)
+            }
+            .background(.black)
         })
         .confirmationDialog("Choose Image Source", isPresented: $showChooseDialog) {
             Button("Choose Photo") {
@@ -62,9 +84,8 @@ struct InputFormView: View {
                 }
             }
         }
-        .onChange(of: selectedItem) { imageSelection in
-            viewModel.getPhoto(for: imageSelection)
-        }
+        
+        
     }
 }
 
