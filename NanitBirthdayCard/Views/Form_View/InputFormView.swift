@@ -9,14 +9,20 @@ import SwiftUI
 import PhotosUI
 
 struct InputFormView: View {
+    
+    /// The views viewModel object
+    @ObservedObject var viewModel: ViewModel = ViewModel()
+    
+    // View properties associated with it's state
     @State var showChooseDialog: Bool = false
     @State var showPhotosPicker: Bool = false
     @State var showCameraView: Bool = false
     @State var selectedItem: PhotosPickerItem?
+    @State var showClearSearchFieldButton: Bool = false
     
-    @ObservedObject var viewModel: ViewModel = ViewModel()
     var body: some View {
         VStack(alignment: .leading) {
+            //------ Header
             VStack(alignment: .leading, spacing: 0) {
                 Text("Birthday Card")
                     .font(.title)
@@ -30,19 +36,39 @@ struct InputFormView: View {
                         .frame(height: 15)
                 }
             }
+            //------
             Spacer()
+            //------ Selected photo view
             CircularPhotoView(image: $viewModel.selectedImage, theme: $viewModel.theme)
                 .onTapGesture {
                     showChooseDialog = true
                 }
             Spacer()
+            //------
+            //------ Input Fields
             Text("Name")
-            TextField("e.g. Christiano Ronaldo", text: $viewModel.name)
-                .tint(viewModel.theme.color)
-                .textFieldStyle(.roundedBorder)
+            HStack {
+                TextField("e.g. Christiano Ronaldo", text: $viewModel.name)
+                    .tint(viewModel.theme.color)
+                    .onChange(of: viewModel.name) { text in
+                        shouldShowClearTextButton(for: text)
+                    }
+                //------ Clear Text Button
+                if (showClearSearchFieldButton) {
+                    Image(systemName:"xmark.circle.fill")
+                        .transition(.scale)
+                        .onTapGesture {
+                            viewModel.name = ""
+                            
+                        }
+                }
+            }
+            .padding(.bottom, 5)
             DatePicker("Birthday", selection: $viewModel.birthdayDate, displayedComponents: .date)
                 .tint(viewModel.theme.color)
             Spacer()
+            //------
+            //------ Navigation Button
             Button {
                 print("Navigate to card view here")
             } label: {
@@ -62,31 +88,23 @@ struct InputFormView: View {
         .onChange(of: selectedItem) { imageSelection in
             viewModel.getPhoto(for: imageSelection)
         }
-        .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
-        .fullScreenCover(isPresented: $showCameraView, content: {
-            VStack {
-                CameraView(image: $viewModel.selectedImage)
-            }
-            .background(.black)
-        })
-        .confirmationDialog("Choose Image Source", isPresented: $showChooseDialog) {
-            Button("Choose Photo") {
-                showPhotosPicker = true
-            }
-            Button("Take a Picture") {
-                print("Take a Picture action selected")
-                showCameraView = true
-            }
-            if (viewModel.selectedImage != nil) {
-                Button("Remove Selection", role: .destructive) {
-                    print("Remove Selection action selected")
-                    viewModel.selectedImage = nil
-                }
-            }
-        }
-        
+        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $selectedItem, selectedImage: $viewModel.selectedImage, showChooseDialog: $showChooseDialog)
         
     }
+    
+    //------ Function for deciding wether the 'Clear text' button should be visible
+    func shouldShowClearTextButton(for text: String) {
+        if (text == "") {
+            withAnimation {
+                showClearSearchFieldButton = false
+            }
+        } else {
+            withAnimation {
+                showClearSearchFieldButton = true
+            }
+        }
+    }
+    
 }
 
 #Preview {

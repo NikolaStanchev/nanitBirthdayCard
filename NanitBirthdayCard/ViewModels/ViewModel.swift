@@ -11,7 +11,7 @@ import SwiftUI
 import PhotosUI
 
 // The @Observable macro would be a better choice here, but it's available for iOS 17 and up,
-// my intent of is to keep the deployment target lower(iOS 16). so observation of the class will need to happen with the ObservableObject and @Published combination
+// my intent of is to keep the deployment target lower(iOS 16). so observation of the class will need to happen with the ObservableObject protocol and @Published combination
 final class ViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var birthdayDate: Date = .now

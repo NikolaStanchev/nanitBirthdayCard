@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A view to display the selected user photo in circle with border
 struct CircularPhotoView: View {
     @Binding var image: UIImage?
     @Binding var theme: Theme
