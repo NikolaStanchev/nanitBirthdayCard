@@ -14,7 +14,6 @@ struct CircularPhotoView: View {
     @Binding var hideCameraIcon: Bool
     
     @State var circleSize: CGFloat = 0
-    @EnvironmentObject var circleSizeObserver: CircleSizeObserver
     var isForCapture: Bool
     var body: some View {
         ZStack {

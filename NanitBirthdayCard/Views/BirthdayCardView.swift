@@ -23,7 +23,6 @@ struct BirthdayCardView: View {
     //    TESTING
     @State var viewSize: CGSize = .zero
     
-    @State var circleSizeObserver: CircleSizeObserver = CircleSizeObserver()
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
@@ -59,7 +58,6 @@ struct BirthdayCardView: View {
                     .fontWeight(.bold)
                     .padding(.bottom, 20)
                 CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: $isBeingCaptured, isForCapture: false)
-                    .environmentObject(circleSizeObserver)
                     .onTapGesture {
                         showChooseDialog = true
                     }
@@ -113,12 +111,15 @@ struct BirthdayCardView: View {
             calculateDate(for: viewModel.birthdayDate)
             captureSnapshot()
         }
+        .onChange(of: viewModel.imageTest) { _ in
+            captureSnapshot()
+        }
         
         
     }
     
     var capturableView: some View {
-        ZStack(alignment: .top) {
+        return ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
@@ -153,7 +154,6 @@ struct BirthdayCardView: View {
                     .padding(.bottom, 20)
                 HStack {
                     CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: .constant(true), isForCapture: true)
-                        .environmentObject(circleSizeObserver)
                         .onTapGesture {
                             showChooseDialog = true
                         }

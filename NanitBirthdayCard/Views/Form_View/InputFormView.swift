@@ -20,8 +20,7 @@ struct InputFormView: View {
     @State var selectedItem: PhotosPickerItem?
     @State var showClearSearchFieldButton: Bool = false
     
-//    TESTING
-    @State var circleSizeObserver: CircleSizeObserver = CircleSizeObserver()
+
     var body: some View {
         VStack(alignment: .leading) {
             //------ Header
@@ -42,7 +41,6 @@ struct InputFormView: View {
             Spacer()
             //------ Selected photo view
             CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
-                .environmentObject(circleSizeObserver)                
                 .onTapGesture {
                     showChooseDialog = true
                 }
@@ -92,9 +90,6 @@ struct InputFormView: View {
             
         }
         .padding(.horizontal, 20)
-//        .onChange(of: selectedItem) { imageSelection in
-//            viewModel.getPhoto(for: imageSelection)
-//        }
         .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.imageTest, showChooseDialog: $showChooseDialog)
     }
     
