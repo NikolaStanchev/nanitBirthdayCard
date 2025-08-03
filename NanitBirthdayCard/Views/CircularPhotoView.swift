@@ -38,7 +38,6 @@ struct CircularPhotoView: View {
                         imageTest?
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .padding(.horizontal, 50)
                             .clipShape(Circle())
                             .padding(2)
                     )

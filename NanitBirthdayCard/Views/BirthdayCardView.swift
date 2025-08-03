@@ -114,7 +114,10 @@ struct BirthdayCardView: View {
             calculateDate(for: viewModel.birthdayDate)
             captureSnapshot()
         }
-        .onChange(of: viewModel.image) { _ in
+        .onChange(of: viewModel.image) { newImage in
+            if newImage == nil {
+                viewModel.image = Image(viewModel.theme.placeholderImage)
+            }
             captureSnapshot()
         }
         

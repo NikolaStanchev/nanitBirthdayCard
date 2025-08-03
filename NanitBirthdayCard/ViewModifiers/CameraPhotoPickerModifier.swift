@@ -17,7 +17,7 @@ struct CameraPhotoPickerModifier: ViewModifier {
     @Binding var selectedItem: PhotosPickerItem?
     @Binding var selectedImage: Image?
     @Binding var showChooseDialog: Bool
-    
+
     func body(content: Content) -> some View {
         content
             .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)

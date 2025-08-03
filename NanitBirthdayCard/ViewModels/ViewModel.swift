@@ -16,7 +16,7 @@ final class ViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var birthdayDate: Date = .now
     @Published var theme: Theme
-    @Published var image: Image?
+    @Published var image: Image? 
 
     @Published var imageSelection: PhotosPickerItem? {
         didSet {
