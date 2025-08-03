@@ -6,6 +6,7 @@
 //
 import SwiftUI
 
+// A extension for creating colors from HEX string, since because of a bug in the ImageRenderer using asset color they dont get displayed.
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)

@@ -44,6 +44,7 @@ struct InputFormView: View {
                 .onTapGesture {
                     showChooseDialog = true
                 }
+
             Spacer()
             //------
             //------ Input Fields
@@ -53,6 +54,9 @@ struct InputFormView: View {
                     .tint(viewModel.theme.color)
                     .onChange(of: viewModel.name) { text in
                         shouldShowClearTextButton(for: text)
+                    }
+                    .onSubmit {
+                        UserDefaults.standard.set(viewModel.name, forKey: "savedName")
                     }
                 //------ Clear Text Button
                 if (showClearSearchFieldButton) {
@@ -91,6 +95,9 @@ struct InputFormView: View {
         }
         .padding(.horizontal, 20)
         .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.image, showChooseDialog: $showChooseDialog)
+        .onChange(of: viewModel.birthdayDate) { newValue in
+            UserDefaults.standard.set(newValue, forKey: "savedDate")
+        }
     }
     
     //------ Function for deciding wether the 'Clear text' button should be visible

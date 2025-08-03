@@ -25,11 +25,11 @@ struct CircularPhotoView: View {
                         GeometryReader { proxy in
                             Color.clear
                                 .onAppear {
-                                    print("[CircularPhotoView] <-- Size is: \(proxy.size)")
+//                                    print("[CircularPhotoView] <-- Size is: \(proxy.size)")
                                     circleSize = proxy.size.height
                                 }
                                 .onChange(of: proxy.size) { newValue in
-                                    print("[CircularPhotoView] <-- Size change!: \(newValue)")
+//                                    print("[CircularPhotoView] <-- Size change!: \(newValue)")
                                     circleSize = newValue.height
                                 }
                         }

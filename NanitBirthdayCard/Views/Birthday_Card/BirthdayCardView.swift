@@ -20,8 +20,8 @@ struct BirthdayCardView: View {
     
     @State var highResolutionCapturedImage: Image?
     @State var isBeingCaptured: Bool = false
-    //    TESTING
-    @State var viewSize: CGSize = .zero
+    @State var digitsToDisplay: [String] = []
+    @State var timeMeasurementToDisplay: String = "Months"
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -46,14 +46,15 @@ struct BirthdayCardView: View {
                     Spacer()
                     Image("Other/Left_swirls")
                         .padding(.trailing, 22)
-                    Image("Numbers/1")
-                    Image("Numbers/1")
+                    ForEach(digitsToDisplay, id:\.self) { digit in
+                        Image(digit)
+                    }
                     Image("Other/Right_swirls")
                         .padding(.leading, 22)
                     Spacer()
                 }
                 .padding(.bottom, 14)
-                Text("Month old!")
+                Text("\(timeMeasurementToDisplay) old!")
                     .textCase(.uppercase)
                     .font(.title2)
                     .fontWeight(.bold)
@@ -124,6 +125,8 @@ struct BirthdayCardView: View {
         
     }
     
+    // a variable representing the view we want to capture for sharing/exporting the birthday card. A near identical copy of the body of this current view, just with buttons and functionality removed,
+    // it just represents the view the use is seeing but in a way to pass it to the RenderImage object
     var capturableView: some View {
         return ZStack(alignment: .top) {
             VStack(spacing: 0) {
@@ -146,8 +149,9 @@ struct BirthdayCardView: View {
                     Spacer()
                     Image("Other/Left_swirls")
                         .padding(.trailing, 22)
-                    Image("Numbers/1")
-                    Image("Numbers/1")
+                    ForEach(digitsToDisplay, id:\.self) { digit in
+                        Image(digit)
+                    }
                     Image("Other/Right_swirls")
                         .padding(.leading, 22)
                     Spacer()
@@ -194,56 +198,60 @@ struct BirthdayCardView: View {
         isBeingCaptured = true
         let contentToCapture = capturableView
         let renderer = ImageRenderer(content: contentToCapture)
-        print("[BirthdayCardView] <-- CAPTURED!")
+        //        print("[BirthdayCardView] <-- CAPTURED!")
         isBeingCaptured = false
         renderer.scale = 3
         if let safeImage = renderer.cgImage {
             highResolutionCapturedImage = Image(decorative:safeImage , scale: 1.0)
         } else {
-            print("[BirthdayCardView] <-- NO HIGH RES IMAGE!")
+            //            print("[BirthdayCardView] <-- NO HIGH RES IMAGE!")
         }
     }
     
+    /// Function for calculating wether the displayed age should be in years or months and the calling function for getting the respective images from the assets
+    /// - Parameter date: the date to check for
     func calculateDate(for date: Date) {
-        var numbersToDisplay: [String] = []
+        
         let dateComponents = Calendar.current.dateComponents([.year, .month], from: date, to: .now)
         let months = dateComponents.month ?? 0
         let years = dateComponents.year ?? 0
+        var age = 0
         
-        print("[BirthdayCardView] <-- Date components are: \(dateComponents)")
         if years > 0 {
-            print("should calculate years")
-            print("user is \(years) years old")
+            age = years
+            switch (years > 1) {
+            case true:
+                timeMeasurementToDisplay = "years"
+            case false:
+                timeMeasurementToDisplay = "year"
+            }
+            
         } else {
-            print("should calculate months")
-            print("user is \(months) months old")
+            age = months
+            switch (months) {
+            case _ where months > 1 :
+                timeMeasurementToDisplay = "months"
+            case _ where months == 1 :
+                timeMeasurementToDisplay = "month"
+            default:
+                timeMeasurementToDisplay = "monts"
+            }
+            
         }
         
+        getNumbersToDiplay(for: age)
+    }
+    
+    /// Function used for getting the names of image assets to represent a given Int example: 12 would mean the image assets Numbers/1 & Numbers/2 would be added to the array as strings for referencing them in Image("resourseName")
+    /// - Parameter number:
+    func getNumbersToDiplay(for number:Int) {
+        digitsToDisplay.removeAll()
+        // Make an array of the digits of the number as strings, for handling getting of the custom digits assets for displaying the age
+        let stringifiedDigits = String(number).compactMap( {Int(String($0))})
         
-        
+        for digit in stringifiedDigits {
+            digitsToDisplay.append("Numbers/\(digit)")
+        }
         
     }
-}
-
-struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        
-    }
-}
-
-extension View {
-    func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
-        background(
-            GeometryReader { geometry in
-                Color.clear
-                    .preference(key: SizePreferenceKey.self, value: geometry.size)
-            }
-        )
-        .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
-    }
-}
-
-#Preview {
-    //    BirthdayCardView()
 }

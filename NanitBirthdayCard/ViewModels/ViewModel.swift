@@ -31,6 +31,8 @@ final class ViewModel: ObservableObject {
     init() {
         let availableThemes = Theme.allCases
         theme = availableThemes[Int.random(in: 0..<availableThemes.count)]
+        name = UserDefaults.standard.string(forKey: "savedName") ?? ""
+        birthdayDate = UserDefaults.standard.value(forKey: "savedDate") as? Date ?? .now
         print("Chosen theme is: \(theme)")
     }
     
@@ -50,6 +52,13 @@ final class ViewModel: ObservableObject {
         withAnimation(.linear) {
             self.image = image
         }
+    }
+    
+    // this function can be used in case it is manditory to get a random theme on the appear callback of birthday card, I currently get in on init of this class, to create a more consistend theming across the app
+    // and to apply color to the input form view as well
+    func loadTheme() {
+        let availableThemes = Theme.allCases
+        theme = availableThemes[Int.random(in: 0..<availableThemes.count)]
     }
     
     // defining a deinit function for keeping an eye over memory management in future uses(if/when app gets more complex) where retention cycles may occur
