@@ -39,14 +39,6 @@ struct InputFormView: View {
             }
             //------
             Spacer()
-            //------ Selected photo view
-            CircularPhotoView(imageTest: $viewModel.image, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
-                .onTapGesture {
-                    showChooseDialog = true
-                }
-
-            Spacer()
-            //------
             //------ Input Fields
             Text("Name")
             HStack {
@@ -73,6 +65,15 @@ struct InputFormView: View {
                 .tint(viewModel.theme.color)
             Spacer()
             //------
+            //------ Selected photo view
+            HStack {
+                CircularPhotoView(imageTest: $viewModel.image, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
+                    .onTapGesture {
+                        showChooseDialog = true
+                    }
+            }
+            Spacer()
+            //------
             //------ Navigation Button
         
             NavigationLink(destination: BirthdayCardView().environmentObject(viewModel)) {
@@ -93,6 +94,7 @@ struct InputFormView: View {
             
             
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .padding(.horizontal, 20)
         .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.image, showChooseDialog: $showChooseDialog)
         .onChange(of: viewModel.birthdayDate) { newValue in
