@@ -26,6 +26,7 @@ struct BirthdayCardView: View {
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
+                //------ Header
                 HStack {
                     Spacer()
                     Text("Today \(viewModel.name) is")
@@ -57,15 +58,17 @@ struct BirthdayCardView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.bottom, 20)
-                CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: $isBeingCaptured, isForCapture: false)
+                //------
+                //------ Selected photo view
+                CircularPhotoView(imageTest: $viewModel.image, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
                     .onTapGesture {
                         showChooseDialog = true
                     }
-                //                }
+                    .padding(.horizontal, 50)
+                //------
                 Spacer()
-                    .padding(.bottom, 15)
-                
             }
+            
             Image(viewModel.theme.background)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -103,15 +106,15 @@ struct BirthdayCardView: View {
             
         }
         .background(viewModel.theme.colorSecondary)
-        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.imageTest, showChooseDialog: $showChooseDialog)
+        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.image, showChooseDialog: $showChooseDialog)
         .onAppear {
-            if viewModel.imageTest == nil {
-                viewModel.imageTest = Image(viewModel.theme.placeholderImage)
+            if viewModel.image == nil {
+                viewModel.image = Image(viewModel.theme.placeholderImage)
             }
             calculateDate(for: viewModel.birthdayDate)
             captureSnapshot()
         }
-        .onChange(of: viewModel.imageTest) { _ in
+        .onChange(of: viewModel.image) { _ in
             captureSnapshot()
         }
         
@@ -153,7 +156,7 @@ struct BirthdayCardView: View {
                     .fontWeight(.bold)
                     .padding(.bottom, 20)
                 HStack {
-                    CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: .constant(true), isForCapture: true)
+                    CircularPhotoView(imageTest: $viewModel.image, theme: $viewModel.theme, hideCameraIcon: .constant(true), isForCapture: true)
                         .onTapGesture {
                             showChooseDialog = true
                         }

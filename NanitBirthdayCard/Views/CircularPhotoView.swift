@@ -40,7 +40,7 @@ struct CircularPhotoView: View {
                             .aspectRatio(contentMode: .fill)
                             .padding(.horizontal, 50)
                             .clipShape(Circle())
-                        
+                            .padding(2)
                     )
                     
             }

@@ -40,7 +40,7 @@ struct InputFormView: View {
             //------
             Spacer()
             //------ Selected photo view
-            CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
+            CircularPhotoView(imageTest: $viewModel.image, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
                 .onTapGesture {
                     showChooseDialog = true
                 }
@@ -90,7 +90,7 @@ struct InputFormView: View {
             
         }
         .padding(.horizontal, 20)
-        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.imageTest, showChooseDialog: $showChooseDialog)
+        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.image, showChooseDialog: $showChooseDialog)
     }
     
     //------ Function for deciding wether the 'Clear text' button should be visible
