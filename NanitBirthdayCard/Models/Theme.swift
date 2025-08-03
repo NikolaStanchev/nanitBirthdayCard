@@ -21,6 +21,30 @@ enum Theme: Identifiable, CaseIterable {
         }
     }
     
+    var colorHex: String {
+        switch self {
+        case .blue: "#8BD3E4"
+        case .yellow: "#FEBE21"
+        case .green: "#6FC5AF"
+        }
+    }
+    
+    var colorSecondary: Color {
+        switch self {
+        case .blue: .nanitBlueSecondary
+        case .yellow: .nanitYellowSecondary
+        case .green: .nanitGreenSecondary
+        }
+    }
+    
+    var colorSecondaryHex: String {
+        switch self {
+        case .blue: "#B9E5EF"
+        case .yellow: "#FEE7B7"
+        case .green: "#A9DCCF"
+        }
+    }
+    
     var background: String {
         switch self {
         case .blue : "BG_Pelican"

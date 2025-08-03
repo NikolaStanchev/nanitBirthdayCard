@@ -15,8 +15,21 @@ import PhotosUI
 final class ViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var birthdayDate: Date = .now
-    @Published var selectedImage: UIImage?
+//    @Published var selectedImage: UIImage?
     @Published var theme: Theme
+    
+//    TESTING
+    @Published var imageTest: Image?
+
+    @Published var imageSelection: PhotosPickerItem? {
+        didSet {
+            if let imageSelection {
+                Task {
+                    try await loadTransferable(from: imageSelection)
+                }
+            }
+        }
+    }
     
     init() {
         let availableThemes = Theme.allCases
@@ -24,33 +37,51 @@ final class ViewModel: ObservableObject {
         print("Chosen theme is: \(theme)")
     }
     
-    /// Function for getting a UIImage from single PhotosPicker selection
-    /// - Parameter imageSelection: The result from the user selecting a single photo in PhotosPicker
-    func getPhoto(for imageSelection: PhotosPickerItem?) {
-        
-        guard let safeImage = imageSelection else {
-            print("Selected image is nil!")
-            return
-        }
-
-        Task {
-            let data = try? await safeImage.loadTransferable(type: Data.self)
-            if let safeData = data {
-                if let image = UIImage(data: safeData) {
-                    await setSelectedImage(to: image)
-                } else {
-                    print("ERROR: Image in nil!")
-                }
+    func loadTransferable(from imageSelection: PhotosPickerItem) async throws {
+        do {
+            if let image = try await imageSelection.loadTransferable(type: Image.self) {
+                await setImage(to: image)
             }
+        } catch {
+            print("loadTransferable: Error \(error.localizedDescription)")
+            imageTest = nil
         }
     }
     
+    /// Function for getting a UIImage from single PhotosPicker selection
+    /// - Parameter imageSelection: The result from the user selecting a single photo in PhotosPicker
+//    func getPhoto(for imageSelection: PhotosPickerItem?) {
+//        
+//        guard let safeImage = imageSelection else {
+//            print("Selected image is nil!")
+//            return
+//        }
+//
+//        Task {
+//            let data = try? await safeImage.loadTransferable(type: Data.self)
+//            if let safeData = data {
+//                if let image = UIImage(data: safeData) {
+//                    await setSelectedImage(to: image)
+//                } else {
+//                    print("ERROR: Image in nil!")
+//                }
+//            }
+//        }
+//    }
+    
     /// Private function isolated on the MainActor for updating the selectedImage after a new one has been retreived from 'getPhoto()'
     /// - Parameter image: The resulting non-optional UIImage aquired in 'getPhoto()'
+//    @MainActor
+//    private func setSelectedImage(to image: UIImage) {
+//        withAnimation(.linear) {
+//            selectedImage = image
+//        }
+//    }
+    
     @MainActor
-    private func setSelectedImage(to image: UIImage) {
+    private func setImage(to image: Image) {
         withAnimation(.linear) {
-            selectedImage = image
+            imageTest = image
         }
     }
     

@@ -13,8 +13,8 @@ import UIKit
 struct CameraView: UIViewControllerRepresentable {
     
     /// Binding to the ViewModel's image property
-    @Binding var image: UIImage?
-    
+//    @Binding var image: UIImage?
+    @Binding var image: Image?
     /// Boolean value used for dismissal of the sheet the view will be presented in
     @Environment(\.presentationMode) var presentationMode
     
@@ -41,8 +41,13 @@ struct CameraView: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//            if let image = info[.originalImage] as? UIImage {
+//                parent.image = image
+//            }
             if let image = info[.originalImage] as? UIImage {
-                parent.image = image
+                parent.image = Image(uiImage: image)
+            } else {
+                print("Error")
             }
             parent.presentationMode.wrappedValue.dismiss()
         }

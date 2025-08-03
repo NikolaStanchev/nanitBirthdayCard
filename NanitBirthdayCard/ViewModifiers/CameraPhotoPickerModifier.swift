@@ -15,7 +15,7 @@ struct CameraPhotoPickerModifier: ViewModifier {
     @Binding var showPhotosPicker: Bool
     @Binding var showCameraView: Bool
     @Binding var selectedItem: PhotosPickerItem?
-    @Binding var selectedImage: UIImage?
+    @Binding var selectedImage: Image?
     @Binding var showChooseDialog: Bool
     
     func body(content: Content) -> some View {
@@ -51,7 +51,7 @@ extension View {
         showPhotosPicker: Binding<Bool>,
         showCameraView: Binding<Bool>,
         selectedItem: Binding<PhotosPickerItem?>,
-        selectedImage: Binding<UIImage?>,
+        selectedImage: Binding<Image?>,
         showChooseDialog: Binding<Bool>
     ) -> some View {
         modifier(CameraPhotoPickerModifier(showPhotosPicker: showPhotosPicker, showCameraView: showCameraView, selectedItem: selectedItem, selectedImage: selectedImage, showChooseDialog: showChooseDialog))

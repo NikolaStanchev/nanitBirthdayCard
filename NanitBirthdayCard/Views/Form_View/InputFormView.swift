@@ -20,6 +20,8 @@ struct InputFormView: View {
     @State var selectedItem: PhotosPickerItem?
     @State var showClearSearchFieldButton: Bool = false
     
+//    TESTING
+    @State var circleSizeObserver: CircleSizeObserver = CircleSizeObserver()
     var body: some View {
         VStack(alignment: .leading) {
             //------ Header
@@ -39,7 +41,8 @@ struct InputFormView: View {
             //------
             Spacer()
             //------ Selected photo view
-            CircularPhotoView(image: $viewModel.selectedImage, theme: $viewModel.theme)
+            CircularPhotoView(imageTest: $viewModel.imageTest, theme: $viewModel.theme, hideCameraIcon: .constant(false), isForCapture: false)
+                .environmentObject(circleSizeObserver)                
                 .onTapGesture {
                     showChooseDialog = true
                 }
@@ -64,32 +67,35 @@ struct InputFormView: View {
                 }
             }
             .padding(.bottom, 5)
-            DatePicker("Birthday", selection: $viewModel.birthdayDate, displayedComponents: .date)
+            DatePicker("Birthday", selection: $viewModel.birthdayDate, in: ...Date.now, displayedComponents: .date)
                 .tint(viewModel.theme.color)
             Spacer()
             //------
             //------ Navigation Button
-            Button {
-                print("Navigate to card view here")
-            } label: {
-                Text("Show birthday screen")
-                    .foregroundStyle(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
+        
+            NavigationLink(destination: BirthdayCardView().environmentObject(viewModel)) {
+                Button {
+                    print("Navigate to card view here")
+                } label: {
+                    Text("Show birthday screen")
+                        .foregroundStyle(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                }
+                .background(viewModel.name == "" ? .gray : viewModel.theme.color)
+                .clipShape(Capsule())
+                .disabled(viewModel.name != "")
+                .padding(.bottom, 53)
             }
-            .background(viewModel.name == "" ? .gray : viewModel.theme.color)
-            .clipShape(Capsule())
-            .disabled(viewModel.name == "")
-            .padding(.bottom, 53)
+            
             
             
         }
         .padding(.horizontal, 20)
-        .onChange(of: selectedItem) { imageSelection in
-            viewModel.getPhoto(for: imageSelection)
-        }
-        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $selectedItem, selectedImage: $viewModel.selectedImage, showChooseDialog: $showChooseDialog)
-        
+//        .onChange(of: selectedItem) { imageSelection in
+//            viewModel.getPhoto(for: imageSelection)
+//        }
+        .photoCameraSelectionPresenter(showPhotosPicker: $showPhotosPicker, showCameraView: $showCameraView, selectedItem: $viewModel.imageSelection, selectedImage: $viewModel.imageTest, showChooseDialog: $showChooseDialog)
     }
     
     //------ Function for deciding wether the 'Clear text' button should be visible
